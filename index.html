@@ -20,6 +20,9 @@
         <option value="">Carregando ajudantes...</option>
       </select>
 
+      <label for="mapa">Mapa</label>
+      <input type="number" id="mapa" min="1" placeholder="Digite apenas números" />
+
       <button id="btnIniciar" onclick="iniciarAfericao()">Iniciar Aferição</button>
     </section>
 
@@ -30,7 +33,7 @@
     </section>
 
     <section class="card" id="areaRegistro" style="display:none;">
-      <h2>Registrar Refugo</h2>
+      <h2>Registrar Vasilhame</h2>
 
       <label for="tipo">Tipo de vasilhame</label>
       <select id="tipo">
@@ -42,13 +45,16 @@
         <option value="">Selecione...</option>
       </select>
 
-      <label for="quantidade">Quantidade</label>
-      <input type="number" id="quantidade" min="1" placeholder="Ex: 10" />
+      <label for="quantidadeAferida">Quantidade Aferida</label>
+      <input type="number" id="quantidadeAferida" min="1" placeholder="Ex: 100" />
+
+      <label for="quantidadeRefugada">Quantidade Refugada</label>
+      <input type="number" id="quantidadeRefugada" min="0" placeholder="Ex: 10" />
 
       <label for="observacao">Observação</label>
       <textarea id="observacao" placeholder="Opcional"></textarea>
 
-      <button onclick="adicionarItem()">Adicionar Refugo</button>
+      <button onclick="adicionarItem()">Adicionar Registro</button>
     </section>
 
     <section class="card" id="areaLista" style="display:none;">
