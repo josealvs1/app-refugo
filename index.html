@@ -1,1 +1,66 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Aferição de Refugo</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
 
+  <div class="container">
+    <header>
+      <h1>Aferição de Refugo</h1>
+      <p>Controle de tempo e registro de vasilhames refugados</p>
+    </header>
+
+    <section class="card">
+      <label for="ajudante">Ajudante responsável</label>
+      <select id="ajudante">
+        <option value="">Carregando ajudantes...</option>
+      </select>
+
+      <button id="btnIniciar" onclick="iniciarAfericao()">Iniciar Aferição</button>
+    </section>
+
+    <section class="card timer-card" id="areaTimer" style="display:none;">
+      <p>Status da aferição</p>
+      <h2 id="timer">00:00:00</h2>
+      <span id="horaInicioTexto"></span>
+    </section>
+
+    <section class="card" id="areaRegistro" style="display:none;">
+      <h2>Registrar Refugo</h2>
+
+      <label for="tipo">Tipo de vasilhame</label>
+      <select id="tipo">
+        <option value="">Selecione...</option>
+      </select>
+
+      <label for="motivo">Motivo do refugo</label>
+      <select id="motivo">
+        <option value="">Selecione...</option>
+      </select>
+
+      <label for="quantidade">Quantidade</label>
+      <input type="number" id="quantidade" min="1" placeholder="Ex: 10" />
+
+      <label for="observacao">Observação</label>
+      <textarea id="observacao" placeholder="Opcional"></textarea>
+
+      <button onclick="adicionarItem()">Adicionar Refugo</button>
+    </section>
+
+    <section class="card" id="areaLista" style="display:none;">
+      <h2>Itens Registrados</h2>
+      <div id="listaItens"></div>
+
+      <button class="finalizar" onclick="finalizarAfericao()">Finalizar Aferição</button>
+    </section>
+
+    <div id="mensagem"></div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
