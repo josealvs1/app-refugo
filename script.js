@@ -37,9 +37,15 @@ function preencherSelect(id, lista, textoPadrao) {
 
 function iniciarAfericao() {
   const ajudante = document.getElementById("ajudante").value;
+  const mapa = document.getElementById("mapa").value;
 
   if (!ajudante) {
     mostrarMensagem("Selecione o ajudante antes de iniciar.", "erro");
+    return;
+  }
+
+  if (!mapa || mapa <= 0) {
+    mostrarMensagem("Informe o número do mapa.", "erro");
     return;
   }
 
@@ -47,6 +53,7 @@ function iniciarAfericao() {
 
   document.getElementById("btnIniciar").disabled = true;
   document.getElementById("ajudante").disabled = true;
+  document.getElementById("mapa").disabled = true;
 
   document.getElementById("areaTimer").style.display = "block";
   document.getElementById("areaRegistro").style.display = "block";
@@ -70,25 +77,47 @@ function atualizarTimer() {
 function adicionarItem() {
   const tipo = document.getElementById("tipo").value;
   const motivo = document.getElementById("motivo").value;
-  const quantidade = document.getElementById("quantidade").value;
+  const quantidadeAferida = document.getElementById("quantidadeAferida").value;
+  const quantidadeRefugada = document.getElementById("quantidadeRefugada").value;
   const observacao = document.getElementById("observacao").value;
 
-  if (!tipo || !motivo || !quantidade || quantidade <= 0) {
-    mostrarMensagem("Preencha tipo, motivo e quantidade.", "erro");
+  if (!tipo) {
+    mostrarMensagem("Selecione o tipo de vasilhame.", "erro");
+    return;
+  }
+
+  if (!motivo) {
+    mostrarMensagem("Selecione o motivo do refugo.", "erro");
+    return;
+  }
+
+  if (!quantidadeAferida || quantidadeAferida <= 0) {
+    mostrarMensagem("Informe a quantidade aferida.", "erro");
+    return;
+  }
+
+  if (quantidadeRefugada === "" || quantidadeRefugada < 0) {
+    mostrarMensagem("Informe a quantidade refugadas.", "erro");
+    return;
+  }
+
+  if (Number(quantidadeRefugada) > Number(quantidadeAferida)) {
+    mostrarMensagem("A quantidade refugadas não pode ser maior que a quantidade aferida.", "erro");
     return;
   }
 
   itens.push({
     tipo,
     motivo,
-    quantidade,
+    quantidadeAferida,
+    quantidadeRefugada,
     observacao
   });
 
   limparCampos();
   renderizarItens();
 
-  mostrarMensagem("Refugo adicionado.", "sucesso");
+  mostrarMensagem("Registro adicionado.", "sucesso");
 }
 
 function renderizarItens() {
@@ -107,7 +136,8 @@ function renderizarItens() {
     div.innerHTML = `
       <strong>${item.tipo}</strong><br>
       Motivo: ${item.motivo}<br>
-      Quantidade: ${item.quantidade}<br>
+      Quantidade Aferida: ${item.quantidadeAferida}<br>
+      Quantidade Refugada: ${item.quantidadeRefugada}<br>
       <small>${item.observacao || "Sem observação"}</small>
       <button onclick="removerItem(${index})">Remover</button>
     `;
@@ -124,13 +154,14 @@ function removerItem(index) {
 function limparCampos() {
   document.getElementById("tipo").value = "";
   document.getElementById("motivo").value = "";
-  document.getElementById("quantidade").value = "";
+  document.getElementById("quantidadeAferida").value = "";
+  document.getElementById("quantidadeRefugada").value = "";
   document.getElementById("observacao").value = "";
 }
 
 async function finalizarAfericao() {
   if (itens.length === 0) {
-    mostrarMensagem("Adicione pelo menos um refugo antes de finalizar.", "erro");
+    mostrarMensagem("Adicione pelo menos um registro antes de finalizar.", "erro");
     return;
   }
 
@@ -143,6 +174,7 @@ async function finalizarAfericao() {
     horaFim: formatarHora(horaFim),
     tempoTotal: formatarTempo(horaFim - horaInicio),
     ajudante: document.getElementById("ajudante").value,
+    mapa: document.getElementById("mapa").value,
     itens: itens
   };
 
