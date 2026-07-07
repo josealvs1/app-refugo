@@ -1,1 +1,137 @@
+* {
+  box-sizing: border-box;
+}
 
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  background: #f3f5f7;
+  color: #1f2933;
+}
+
+.container {
+  width: 100%;
+  max-width: 520px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+header h1 {
+  margin-bottom: 5px;
+  color: #0f172a;
+}
+
+header p {
+  margin-top: 0;
+  color: #64748b;
+}
+
+.card {
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 18px;
+  margin-bottom: 16px;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.08);
+}
+
+label {
+  display: block;
+  margin-top: 12px;
+  margin-bottom: 6px;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+select,
+input,
+textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  font-size: 15px;
+}
+
+textarea {
+  resize: vertical;
+  min-height: 70px;
+}
+
+button {
+  width: 100%;
+  margin-top: 18px;
+  padding: 14px;
+  border: none;
+  border-radius: 10px;
+  background: #2563eb;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+button:hover {
+  opacity: 0.92;
+}
+
+.finalizar {
+  background: #16a34a;
+}
+
+.timer-card {
+  text-align: center;
+  background: #0f172a;
+  color: white;
+}
+
+.timer-card p {
+  margin-bottom: 4px;
+  color: #cbd5e1;
+}
+
+.timer-card h2 {
+  font-size: 42px;
+  margin: 10px 0;
+}
+
+.item {
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 12px;
+  margin-bottom: 10px;
+  background: #f8fafc;
+}
+
+.item strong {
+  color: #0f172a;
+}
+
+.item small {
+  color: #64748b;
+}
+
+.item button {
+  background: #dc2626;
+  padding: 8px;
+  font-size: 13px;
+  margin-top: 10px;
+}
+
+#mensagem {
+  text-align: center;
+  font-weight: bold;
+  margin-top: 15px;
+}
+
+.sucesso {
+  color: #16a34a;
+}
+
+.erro {
+  color: #dc2626;
+}
