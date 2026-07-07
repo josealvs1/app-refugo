@@ -79,6 +79,11 @@ button:hover {
   opacity: 0.92;
 }
 
+button:disabled {
+  background: #94a3b8;
+  cursor: not-allowed;
+}
+
 .finalizar {
   background: #16a34a;
 }
