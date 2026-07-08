@@ -8,65 +8,66 @@
 </head>
 <body>
 
-  <div class="container">
-    <header>
-      <h1>Aferição de Refugo</h1>
-      <p>Controle de tempo e registro de vasilhames refugados</p>
-    </header>
+<div class="container">
+  <header>
+    <h1>Aferição de Refugo</h1>
+    <p>Registro por tipo de vasilhame com tempo individual</p>
+  </header>
 
-    <section class="card">
-      <label for="ajudante">Ajudante responsável</label>
-      <select id="ajudante">
-        <option value="">Carregando ajudantes...</option>
-      </select>
+  <section class="card">
+    <label for="ajudante">Ajudante responsável</label>
+    <select id="ajudante">
+      <option value="">Carregando...</option>
+    </select>
 
-      <label for="mapa">Mapa</label>
-      <input type="number" id="mapa" min="1" placeholder="Digite apenas números" />
+    <label for="mapa">Mapa</label>
+    <input type="number" id="mapa" min="1" placeholder="Digite o número do mapa" />
 
-      <button id="btnIniciar" onclick="iniciarAfericao()">Iniciar Aferição</button>
-    </section>
+    <button id="btnIniciarGeral" onclick="iniciarAfericaoGeral()">Iniciar Aferição Geral</button>
+  </section>
 
-    <section class="card timer-card" id="areaTimer" style="display:none;">
-      <p>Status da aferição</p>
-      <h2 id="timer">00:00:00</h2>
-      <span id="horaInicioTexto"></span>
-    </section>
+  <section class="card" id="areaTipo" style="display:none;">
+    <h2>Novo Vasilhame</h2>
 
-    <section class="card" id="areaRegistro" style="display:none;">
-      <h2>Registrar Vasilhame</h2>
+    <label for="tipo">Tipo de vasilhame</label>
+    <select id="tipo">
+      <option value="">Selecione...</option>
+    </select>
 
-      <label for="tipo">Tipo de vasilhame</label>
-      <select id="tipo">
-        <option value="">Selecione...</option>
-      </select>
+    <button id="btnIniciarItem" onclick="iniciarVasilhame()">Iniciar Aferição deste Vasilhame</button>
+  </section>
 
-      <label for="motivo">Motivo do refugo</label>
-      <select id="motivo">
-        <option value="">Selecione...</option>
-      </select>
+  <section class="card timer-card" id="areaTimerItem" style="display:none;">
+    <p>Tempo deste vasilhame</p>
+    <h2 id="timerItem">00:00:00</h2>
+    <span id="horaInicioItemTexto"></span>
+  </section>
 
-      <label for="quantidadeAferida">Quantidade Aferida</label>
-      <input type="number" id="quantidadeAferida" min="1" placeholder="Ex: 100" />
+  <section class="card" id="areaRegistro" style="display:none;">
+    <h2>Dados da Aferição</h2>
 
-      <label for="quantidadeRefugada">Quantidade Refugada</label>
-      <input type="number" id="quantidadeRefugada" min="0" placeholder="Ex: 10" />
+    <label for="quantidadeAferida">Quantidade Aferida</label>
+    <input type="number" id="quantidadeAferida" min="1" placeholder="Ex: 10" />
 
-      <label for="observacao">Observação</label>
-      <textarea id="observacao" placeholder="Opcional"></textarea>
+    <h3>Quantidade Refugada por Motivo</h3>
+    <div id="motivosContainer"></div>
 
-      <button onclick="adicionarItem()">Adicionar Registro</button>
-    </section>
+    <label for="observacao">Observação</label>
+    <textarea id="observacao" placeholder="Opcional"></textarea>
 
-    <section class="card" id="areaLista" style="display:none;">
-      <h2>Itens Registrados</h2>
-      <div id="listaItens"></div>
+    <button class="finalizar" onclick="finalizarVasilhame()">Finalizar este Vasilhame</button>
+  </section>
 
-      <button class="finalizar" onclick="finalizarAfericao()">Finalizar Aferição</button>
-    </section>
+  <section class="card" id="areaLista" style="display:none;">
+    <h2>Vasilhames Registrados</h2>
+    <div id="listaItens"></div>
 
-    <div id="mensagem"></div>
-  </div>
+    <button onclick="novaAfericao()">Nova Aferição</button>
+  </section>
 
-  <script src="script.js"></script>
+  <div id="mensagem"></div>
+</div>
+
+<script src="script.js"></script>
 </body>
 </html>
