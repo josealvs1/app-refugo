@@ -1,9 +1,9 @@
 const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxSWemrgsrkqfYa_8yEzqZySSYthA8q1s2rSOUQ1ISFiyWgffJKxJ9sJ5RHnFWdvZBI/exec";
+let motivos = [];
+let registros = [];
 
-let horaInicio = null;
-let horaFim = null;
-let intervaloTimer = null;
-let itens = [];
+let horaInicioItem = null;
+let intervaloTimerItem = null;
 
 window.onload = function () {
   carregarDados();
@@ -14,9 +14,10 @@ async function carregarDados() {
     const resposta = await fetch(WEB_APP_URL);
     const dados = await resposta.json();
 
+    motivos = dados.motivos || [];
+
     preencherSelect("ajudante", dados.ajudantes, "Selecione o ajudante");
     preencherSelect("tipo", dados.tipos, "Selecione o tipo");
-    preencherSelect("motivo", dados.motivos, "Selecione o motivo");
 
   } catch (erro) {
     mostrarMensagem("Erro ao carregar dados da planilha.", "erro");
@@ -35,12 +36,12 @@ function preencherSelect(id, lista, textoPadrao) {
   });
 }
 
-function iniciarAfericao() {
+function iniciarAfericaoGeral() {
   const ajudante = document.getElementById("ajudante").value;
   const mapa = document.getElementById("mapa").value;
 
   if (!ajudante) {
-    mostrarMensagem("Selecione o ajudante antes de iniciar.", "erro");
+    mostrarMensagem("Selecione o ajudante.", "erro");
     return;
   }
 
@@ -49,151 +50,121 @@ function iniciarAfericao() {
     return;
   }
 
-  horaInicio = new Date();
-
-  document.getElementById("btnIniciar").disabled = true;
   document.getElementById("ajudante").disabled = true;
   document.getElementById("mapa").disabled = true;
+  document.getElementById("btnIniciarGeral").disabled = true;
 
-  document.getElementById("areaTimer").style.display = "block";
-  document.getElementById("areaRegistro").style.display = "block";
+  document.getElementById("areaTipo").style.display = "block";
   document.getElementById("areaLista").style.display = "block";
 
-  document.getElementById("horaInicioTexto").textContent =
-    "Iniciado às " + formatarHora(horaInicio);
-
-  intervaloTimer = setInterval(atualizarTimer, 1000);
-
-  mostrarMensagem("Aferição iniciada.", "sucesso");
+  mostrarMensagem("Aferição geral iniciada.", "sucesso");
 }
 
-function atualizarTimer() {
-  const agora = new Date();
-  const diferenca = agora - horaInicio;
-
-  document.getElementById("timer").textContent = formatarTempo(diferenca);
-}
-
-function adicionarItem() {
+function iniciarVasilhame() {
   const tipo = document.getElementById("tipo").value;
-  const motivo = document.getElementById("motivo").value;
-  const quantidadeAferida = document.getElementById("quantidadeAferida").value;
-  const quantidadeRefugada = document.getElementById("quantidadeRefugada").value;
-  const observacao = document.getElementById("observacao").value;
 
   if (!tipo) {
     mostrarMensagem("Selecione o tipo de vasilhame.", "erro");
     return;
   }
 
-  if (!motivo) {
-    mostrarMensagem("Selecione o motivo do refugo.", "erro");
-    return;
-  }
+  horaInicioItem = new Date();
+
+  document.getElementById("tipo").disabled = true;
+  document.getElementById("btnIniciarItem").disabled = true;
+
+  document.getElementById("areaTimerItem").style.display = "block";
+  document.getElementById("areaRegistro").style.display = "block";
+
+  document.getElementById("horaInicioItemTexto").textContent =
+    "Iniciado às " + formatarHora(horaInicioItem);
+
+  montarCamposMotivos();
+
+  intervaloTimerItem = setInterval(atualizarTimerItem, 1000);
+
+  mostrarMensagem("Aferição do vasilhame iniciada.", "sucesso");
+}
+
+function atualizarTimerItem() {
+  const agora = new Date();
+  const diferenca = agora - horaInicioItem;
+  document.getElementById("timerItem").textContent = formatarTempo(diferenca);
+}
+
+function montarCamposMotivos() {
+  const container = document.getElementById("motivosContainer");
+  container.innerHTML = "";
+
+  motivos.forEach((motivo, index) => {
+    const div = document.createElement("div");
+    div.className = "motivo-linha";
+
+    div.innerHTML = `
+      <label for="motivo_${index}">${motivo}</label>
+      <input type="number" id="motivo_${index}" min="0" value="0" />
+    `;
+
+    container.appendChild(div);
+  });
+}
+
+async function finalizarVasilhame() {
+  const quantidadeAferida = document.getElementById("quantidadeAferida").value;
+  const observacao = document.getElementById("observacao").value;
 
   if (!quantidadeAferida || quantidadeAferida <= 0) {
     mostrarMensagem("Informe a quantidade aferida.", "erro");
     return;
   }
 
-  if (quantidadeRefugada === "" || quantidadeRefugada < 0) {
-    mostrarMensagem("Informe a quantidade refugadas.", "erro");
-    return;
-  }
+  let totalRefugado = 0;
+  const motivosRegistrados = {};
 
-  if (Number(quantidadeRefugada) > Number(quantidadeAferida)) {
-    mostrarMensagem("A quantidade refugadas não pode ser maior que a quantidade aferida.", "erro");
-    return;
-  }
-
-  itens.push({
-    tipo,
-    motivo,
-    quantidadeAferida,
-    quantidadeRefugada,
-    observacao
+  motivos.forEach((motivo, index) => {
+    const valor = Number(document.getElementById(`motivo_${index}`).value || 0);
+    motivosRegistrados[motivo] = valor;
+    totalRefugado += valor;
   });
 
-  limparCampos();
-  renderizarItens();
-
-  mostrarMensagem("Registro adicionado.", "sucesso");
-}
-
-function renderizarItens() {
-  const lista = document.getElementById("listaItens");
-  lista.innerHTML = "";
-
-  if (itens.length === 0) {
-    lista.innerHTML = "<p>Nenhum item registrado ainda.</p>";
+  if (totalRefugado > Number(quantidadeAferida)) {
+    mostrarMensagem("O total refugado não pode ser maior que a quantidade aferida.", "erro");
     return;
   }
 
-  itens.forEach((item, index) => {
-    const div = document.createElement("div");
-    div.className = "item";
+  const horaFimItem = new Date();
+  clearInterval(intervaloTimerItem);
 
-    div.innerHTML = `
-      <strong>${item.tipo}</strong><br>
-      Motivo: ${item.motivo}<br>
-      Quantidade Aferida: ${item.quantidadeAferida}<br>
-      Quantidade Refugada: ${item.quantidadeRefugada}<br>
-      <small>${item.observacao || "Sem observação"}</small>
-      <button onclick="removerItem(${index})">Remover</button>
-    `;
-
-    lista.appendChild(div);
-  });
-}
-
-function removerItem(index) {
-  itens.splice(index, 1);
-  renderizarItens();
-}
-
-function limparCampos() {
-  document.getElementById("tipo").value = "";
-  document.getElementById("motivo").value = "";
-  document.getElementById("quantidadeAferida").value = "";
-  document.getElementById("quantidadeRefugada").value = "";
-  document.getElementById("observacao").value = "";
-}
-
-async function finalizarAfericao() {
-  if (itens.length === 0) {
-    mostrarMensagem("Adicione pelo menos um registro antes de finalizar.", "erro");
-    return;
-  }
-
-  horaFim = new Date();
-  clearInterval(intervaloTimer);
-
-  const dadosEnvio = {
-    data: formatarData(horaInicio),
-    horaInicio: formatarHora(horaInicio),
-    horaFim: formatarHora(horaFim),
-    tempoTotal: formatarTempo(horaFim - horaInicio),
+  const registro = {
+    data: formatarData(horaInicioItem),
     ajudante: document.getElementById("ajudante").value,
     mapa: document.getElementById("mapa").value,
-    itens: itens
+    tipo: document.getElementById("tipo").value,
+    horaInicio: formatarHora(horaInicioItem),
+    horaFim: formatarHora(horaFimItem),
+    tempo: formatarTempo(horaFimItem - horaInicioItem),
+    quantidadeAferida: quantidadeAferida,
+    motivos: motivosRegistrados,
+    observacao: observacao
   };
 
   try {
-    mostrarMensagem("Enviando dados para a planilha...", "sucesso");
+    mostrarMensagem("Salvando registro na planilha...", "sucesso");
 
     const resposta = await fetch(WEB_APP_URL, {
       method: "POST",
-      body: JSON.stringify(dadosEnvio)
+      body: JSON.stringify({
+        registros: [registro]
+      })
     });
 
     const retorno = await resposta.json();
 
     if (retorno.status === "success") {
-      mostrarMensagem("Aferição finalizada e salva com sucesso!", "sucesso");
-
-      setTimeout(() => {
-        location.reload();
-      }, 2000);
+      registros.push(registro);
+      renderizarRegistros();
+      limparItem();
+      mostrarMensagem("Vasilhame salvo com sucesso!", "sucesso");
     } else {
       mostrarMensagem("Erro ao salvar: " + retorno.message, "erro");
     }
@@ -201,6 +172,58 @@ async function finalizarAfericao() {
   } catch (erro) {
     mostrarMensagem("Erro ao enviar dados para a planilha.", "erro");
   }
+}
+
+function renderizarRegistros() {
+  const lista = document.getElementById("listaItens");
+  lista.innerHTML = "";
+
+  if (registros.length === 0) {
+    lista.innerHTML = "<p>Nenhum vasilhame registrado ainda.</p>";
+    return;
+  }
+
+  registros.forEach(registro => {
+    const div = document.createElement("div");
+    div.className = "item";
+
+    let motivosTexto = "";
+
+    Object.keys(registro.motivos).forEach(motivo => {
+      motivosTexto += `${motivo}: ${registro.motivos[motivo]}<br>`;
+    });
+
+    div.innerHTML = `
+      <strong>${registro.tipo}</strong><br>
+      Tempo: ${registro.tempo}<br>
+      Quantidade Aferida: ${registro.quantidadeAferida}<br>
+      ${motivosTexto}
+      <small>${registro.observacao || "Sem observação"}</small>
+    `;
+
+    lista.appendChild(div);
+  });
+}
+
+function limparItem() {
+  document.getElementById("tipo").value = "";
+  document.getElementById("tipo").disabled = false;
+  document.getElementById("btnIniciarItem").disabled = false;
+
+  document.getElementById("quantidadeAferida").value = "";
+  document.getElementById("observacao").value = "";
+  document.getElementById("motivosContainer").innerHTML = "";
+
+  document.getElementById("timerItem").textContent = "00:00:00";
+
+  document.getElementById("areaTimerItem").style.display = "none";
+  document.getElementById("areaRegistro").style.display = "none";
+
+  horaInicioItem = null;
+}
+
+function novaAfericao() {
+  location.reload();
 }
 
 function formatarData(data) {
