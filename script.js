@@ -177,6 +177,7 @@ async function finalizarVasilhame() {
       renderizarRegistros();
       limparItem();
       mostrarMensagem("Vasilhame salvo com sucesso!", "sucesso");
+      botao.disabled = false;
       return;
     } else {
       mostrarMensagem("Erro ao salvar: " + retorno.message, "erro");
