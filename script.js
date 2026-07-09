@@ -169,12 +169,11 @@ function montarCamposMotivos() {
     const retorno = await resposta.json();
 
     if (retorno.status === "success") {
+      enviando = false;
+      botao.disabled = false;
       registros.push(registro);
       renderizarRegistros();
       limparItem();
-
-      enviando = false;
-      botao.disabled = false;
       botao.textContent = "Finalizar este Vasilhame";
 
       mostrarMensagem("Vasilhame salvo com sucesso! Pode iniciar o próximo.", "sucesso");
