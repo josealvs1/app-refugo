@@ -5,6 +5,8 @@ let registros = [];
 let horaInicioItem = null;
 let intervaloTimerItem = null;
 
+let enviando = false;
+
 window.onload = function () {
   carregarDados();
 };
@@ -110,6 +112,16 @@ function montarCamposMotivos() {
 }
 
 async function finalizarVasilhame() {
+  if (enviando) {
+      return;
+  }
+  
+  enviando = true;
+  
+  const botao = document.querySelector(".finalizar");
+  botao.disabled = true;
+  botao.textContent = "Salvando...";
+  
   const quantidadeAferida = document.getElementById("quantidadeAferida").value;
   const observacao = document.getElementById("observacao").value;
 
@@ -165,12 +177,17 @@ async function finalizarVasilhame() {
       renderizarRegistros();
       limparItem();
       mostrarMensagem("Vasilhame salvo com sucesso!", "sucesso");
+      return;
     } else {
       mostrarMensagem("Erro ao salvar: " + retorno.message, "erro");
+      botao.disabled = false;
+      botao.textContent = "Finalizar este Vasilhame";
     }
 
   } catch (erro) {
     mostrarMensagem("Erro ao enviar dados para a planilha.", "erro");
+    botao.disabled = false;
+    botao.textContent = "Finalizar este Vasilhame";
   }
 }
 
