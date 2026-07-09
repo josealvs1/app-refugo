@@ -173,21 +173,21 @@ async function finalizarVasilhame() {
     const retorno = await resposta.json();
 
     if (retorno.status === "success") {
+      botao.disabled = false;
       registros.push(registro);
       renderizarRegistros();
       limparItem();
       mostrarMensagem("Vasilhame salvo com sucesso!", "sucesso");
-      botao.disabled = false;
       return;
     } else {
-      mostrarMensagem("Erro ao salvar: " + retorno.message, "erro");
       botao.disabled = false;
+      mostrarMensagem("Erro ao salvar: " + retorno.message, "erro");
       botao.textContent = "Finalizar este Vasilhame";
     }
 
   } catch (erro) {
-    mostrarMensagem("Erro ao enviar dados para a planilha.", "erro");
     botao.disabled = false;
+    mostrarMensagem("Erro ao enviar dados para a planilha.", "erro");
     botao.textContent = "Finalizar este Vasilhame";
   }
 }
