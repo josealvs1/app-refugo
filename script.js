@@ -111,17 +111,11 @@ function montarCamposMotivos() {
   });
 }
 
-async function finalizarVasilhame() {
-  if (enviando) {
-      return;
-  }
-  
-  enviando = true;
-  
+ async function finalizarVasilhame() {
+  if (enviando) return;
+
   const botao = document.querySelector(".finalizar");
-  botao.disabled = true;
-  botao.textContent = "Salvando...";
-  
+
   const quantidadeAferida = document.getElementById("quantidadeAferida").value;
   const observacao = document.getElementById("observacao").value;
 
@@ -129,6 +123,10 @@ async function finalizarVasilhame() {
     mostrarMensagem("Informe a quantidade aferida.", "erro");
     return;
   }
+
+  enviando = true;
+  botao.disabled = true;
+  botao.textContent = "Salvando...";
 
   let totalRefugado = 0;
   const motivosRegistrados = {};
@@ -160,9 +158,7 @@ async function finalizarVasilhame() {
     observacao: observacao
   };
 
-  try {
-    mostrarMensagem("Salvando registro na planilha...", "sucesso");
-
+ try {
     const resposta = await fetch(WEB_APP_URL, {
       method: "POST",
       body: JSON.stringify({
@@ -173,22 +169,29 @@ async function finalizarVasilhame() {
     const retorno = await resposta.json();
 
     if (retorno.status === "success") {
-      botao.disabled = false;
       registros.push(registro);
       renderizarRegistros();
       limparItem();
-      mostrarMensagem("Vasilhame salvo com sucesso!", "sucesso");
-      return;
-    } else {
+
+      enviando = false;
       botao.disabled = false;
-      mostrarMensagem("Erro ao salvar: " + retorno.message, "erro");
       botao.textContent = "Finalizar este Vasilhame";
+
+      mostrarMensagem("Vasilhame salvo com sucesso! Pode iniciar o próximo.", "sucesso");
+    } else {
+      enviando = false;
+      botao.disabled = false;
+      botao.textContent = "Finalizar este Vasilhame";
+
+      mostrarMensagem("Erro ao salvar: " + retorno.message, "erro");
     }
 
   } catch (erro) {
+    enviando = false;
     botao.disabled = false;
-    mostrarMensagem("Erro ao enviar dados para a planilha.", "erro");
     botao.textContent = "Finalizar este Vasilhame";
+
+    mostrarMensagem("Erro ao enviar dados para a planilha.", "erro");
   }
 }
 
